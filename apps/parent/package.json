@@ -1,0 +1,40 @@
+{
+  "name": "@family/parent",
+  "private": true,
+  "version": "0.0.0",
+  "main": "expo-router/entry",
+  "scripts": {
+    "test": "node test/run-jest.cjs",
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "dependencies": {
+    "@babel/runtime": "7.28.4",
+    "@family/api-client": "workspace:*",
+    "@family/chore-images": "workspace:*",
+    "@family/contracts": "workspace:*",
+    "@family/design-tokens": "workspace:*",
+    "@react-native-async-storage/async-storage": "2.2.0",
+    "@react-native-community/netinfo": "12.0.1",
+    "@tanstack/query-async-storage-persister": "5.100.14",
+    "@tanstack/react-query": "5.100.14",
+    "@tanstack/react-query-persist-client": "5.100.14",
+    "expo": "57.0.11",
+    "expo-clipboard": "~57.0.1",
+    "expo-constants": "~57.0.9",
+    "expo-linking": "~57.0.5",
+    "expo-router": "57.0.7",
+    "expo-secure-store": "~57.0.1",
+    "expo-status-bar": "~57.0.1",
+    "react": "19.2.3",
+    "react-native": "0.86.2",
+    "react-native-safe-area-context": "~5.7.0",
+    "react-native-screens": "~4.26.2"
+  },
+  "devDependencies": {
+    "@testing-library/react-native": "13.3.3",
+    "@types/jest": "29.5.14",
+    "@types/react": "~19.2.18",
+    "jest": "~29.7.0",
+    "jest-expo": "~57.0.3"
+  }
+}

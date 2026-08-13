@@ -1,0 +1,17 @@
+{
+  "name": "@family/design-tokens",
+  "private": true,
+  "type": "module",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "pnpm --dir ../.. exec vitest run --config vitest.config.mts packages/design-tokens/test/tokens.test.ts",
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  }
+}

@@ -1,0 +1,10 @@
+.superpowers/
+.worktrees/
+.pnpm-store/
+node_modules/
+dist/
+.expo/
+.env
+.local/
+playwright-report/
+test-results/

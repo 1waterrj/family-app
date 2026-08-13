@@ -1,0 +1,1178 @@
+{
+  "id": "03d90e8d-5cdf-44df-a9f1-f5d88f2b26be",
+  "prevId": "c4555012-2eae-47f1-837a-84d56f9f7b32",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.approval_decisions": {
+      "name": "approval_decisions",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "household_id": {
+          "name": "household_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "chore_instance_id": {
+          "name": "chore_instance_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "decided_by_parent_id": {
+          "name": "decided_by_parent_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "decision": {
+          "name": "decision",
+          "type": "approval_decision",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "payout_cents": {
+          "name": "payout_cents",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "note": {
+          "name": "note",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "idempotency_key": {
+          "name": "idempotency_key",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "approval_decisions_household_id_households_id_fk": {
+          "name": "approval_decisions_household_id_households_id_fk",
+          "tableFrom": "approval_decisions",
+          "tableTo": "households",
+          "columnsFrom": ["household_id"],
+          "columnsTo": ["id"],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "approval_decisions_household_chore_fk": {
+          "name": "approval_decisions_household_chore_fk",
+          "tableFrom": "approval_decisions",
+          "tableTo": "chore_instances",
+          "columnsFrom": ["household_id", "chore_instance_id"],
+          "columnsTo": ["household_id", "id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "approval_decisions_household_parent_fk": {
+          "name": "approval_decisions_household_parent_fk",
+          "tableFrom": "approval_decisions",
+          "tableTo": "parent_memberships",
+          "columnsFrom": ["household_id", "decided_by_parent_id"],
+          "columnsTo": ["household_id", "parent_id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "approval_decisions_household_chore_unique": {
+          "name": "approval_decisions_household_chore_unique",
+          "nullsNotDistinct": false,
+          "columns": ["household_id", "chore_instance_id"]
+        },
+        "approval_decisions_household_idempotency_unique": {
+          "name": "approval_decisions_household_idempotency_unique",
+          "nullsNotDistinct": false,
+          "columns": ["household_id", "idempotency_key"]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.audit_events": {
+      "name": "audit_events",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "household_id": {
+          "name": "household_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "actor_role": {
+          "name": "actor_role",
+          "type": "actor_role",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "actor_parent_id": {
+          "name": "actor_parent_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "actor_dashboard_device_id": {
+          "name": "actor_dashboard_device_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "event_type": {
+          "name": "event_type",
+          "type": "varchar(120)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "entity_type": {
+          "name": "entity_type",
+          "type": "varchar(80)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "entity_id": {
+          "name": "entity_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "payload": {
+          "name": "payload",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "audit_events_household_id_households_id_fk": {
+          "name": "audit_events_household_id_households_id_fk",
+          "tableFrom": "audit_events",
+          "tableTo": "households",
+          "columnsFrom": ["household_id"],
+          "columnsTo": ["id"],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        },
+        "audit_events_household_parent_fk": {
+          "name": "audit_events_household_parent_fk",
+          "tableFrom": "audit_events",
+          "tableTo": "parent_memberships",
+          "columnsFrom": ["household_id", "actor_parent_id"],
+          "columnsTo": ["household_id", "parent_id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "audit_events_household_dashboard_fk": {
+          "name": "audit_events_household_dashboard_fk",
+          "tableFrom": "audit_events",
+          "tableTo": "dashboard_devices",
+          "columnsFrom": ["household_id", "actor_dashboard_device_id"],
+          "columnsTo": ["household_id", "id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "audit_events_role_actor_match": {
+          "name": "audit_events_role_actor_match",
+          "value": "(\n        (\"audit_events\".\"actor_role\" = 'PARENT' AND \"audit_events\".\"actor_parent_id\" IS NOT NULL AND \"audit_events\".\"actor_dashboard_device_id\" IS NULL)\n        OR\n        (\"audit_events\".\"actor_role\" = 'DASHBOARD' AND \"audit_events\".\"actor_parent_id\" IS NULL AND \"audit_events\".\"actor_dashboard_device_id\" IS NOT NULL)\n      )"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.child_profiles": {
+      "name": "child_profiles",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "household_id": {
+          "name": "household_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(80)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "color": {
+          "name": "color",
+          "type": "varchar(32)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "image_url": {
+          "name": "image_url",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "child_profiles_household_id_households_id_fk": {
+          "name": "child_profiles_household_id_households_id_fk",
+          "tableFrom": "child_profiles",
+          "tableTo": "households",
+          "columnsFrom": ["household_id"],
+          "columnsTo": ["id"],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "child_profiles_household_id_unique": {
+          "name": "child_profiles_household_id_unique",
+          "nullsNotDistinct": false,
+          "columns": ["household_id", "id"]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.chore_instances": {
+      "name": "chore_instances",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "household_id": {
+          "name": "household_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "chore_template_id": {
+          "name": "chore_template_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(120)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "image_url": {
+          "name": "image_url",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "instructions": {
+          "name": "instructions",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "value_cents": {
+          "name": "value_cents",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "duration_seconds": {
+          "name": "duration_seconds",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "name": "status",
+          "type": "chore_status",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'AVAILABLE'"
+        },
+        "claimed_by_child_id": {
+          "name": "claimed_by_child_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "claim_deadline_at": {
+          "name": "claim_deadline_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "submitted_at": {
+          "name": "submitted_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "chore_instances_household_status_idx": {
+          "name": "chore_instances_household_status_idx",
+          "columns": [
+            {
+              "expression": "household_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "status",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "chore_instances_household_child_created_at_idx": {
+          "name": "chore_instances_household_child_created_at_idx",
+          "columns": [
+            {
+              "expression": "household_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "claimed_by_child_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "created_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "chore_instances_claim_expiration_idx": {
+          "name": "chore_instances_claim_expiration_idx",
+          "columns": [
+            {
+              "expression": "household_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "claim_deadline_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "where": "\"chore_instances\".\"status\" = 'CLAIMED'",
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "chore_instances_household_id_households_id_fk": {
+          "name": "chore_instances_household_id_households_id_fk",
+          "tableFrom": "chore_instances",
+          "tableTo": "households",
+          "columnsFrom": ["household_id"],
+          "columnsTo": ["id"],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "chore_instances_household_template_fk": {
+          "name": "chore_instances_household_template_fk",
+          "tableFrom": "chore_instances",
+          "tableTo": "chore_templates",
+          "columnsFrom": ["household_id", "chore_template_id"],
+          "columnsTo": ["household_id", "id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "chore_instances_household_child_fk": {
+          "name": "chore_instances_household_child_fk",
+          "tableFrom": "chore_instances",
+          "tableTo": "child_profiles",
+          "columnsFrom": ["household_id", "claimed_by_child_id"],
+          "columnsTo": ["household_id", "id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "chore_instances_household_id_unique": {
+          "name": "chore_instances_household_id_unique",
+          "nullsNotDistinct": false,
+          "columns": ["household_id", "id"]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {
+        "chore_instances_value_cents_nonnegative": {
+          "name": "chore_instances_value_cents_nonnegative",
+          "value": "\"chore_instances\".\"value_cents\" >= 0"
+        },
+        "chore_instances_duration_seconds_range": {
+          "name": "chore_instances_duration_seconds_range",
+          "value": "\"chore_instances\".\"duration_seconds\" BETWEEN 60 AND 86400"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.chore_templates": {
+      "name": "chore_templates",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "household_id": {
+          "name": "household_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_by_parent_id": {
+          "name": "created_by_parent_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(120)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "image_url": {
+          "name": "image_url",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "instructions": {
+          "name": "instructions",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "default_value_cents": {
+          "name": "default_value_cents",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "default_duration_seconds": {
+          "name": "default_duration_seconds",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "is_active": {
+          "name": "is_active",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "chore_templates_household_id_households_id_fk": {
+          "name": "chore_templates_household_id_households_id_fk",
+          "tableFrom": "chore_templates",
+          "tableTo": "households",
+          "columnsFrom": ["household_id"],
+          "columnsTo": ["id"],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "chore_templates_household_parent_fk": {
+          "name": "chore_templates_household_parent_fk",
+          "tableFrom": "chore_templates",
+          "tableTo": "parent_memberships",
+          "columnsFrom": ["household_id", "created_by_parent_id"],
+          "columnsTo": ["household_id", "parent_id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "chore_templates_household_id_unique": {
+          "name": "chore_templates_household_id_unique",
+          "nullsNotDistinct": false,
+          "columns": ["household_id", "id"]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {
+        "chore_templates_default_value_cents_nonnegative": {
+          "name": "chore_templates_default_value_cents_nonnegative",
+          "value": "\"chore_templates\".\"default_value_cents\" >= 0"
+        },
+        "chore_templates_default_duration_seconds_range": {
+          "name": "chore_templates_default_duration_seconds_range",
+          "value": "\"chore_templates\".\"default_duration_seconds\" BETWEEN 60 AND 86400"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.chore_transitions": {
+      "name": "chore_transitions",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "household_id": {
+          "name": "household_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "chore_instance_id": {
+          "name": "chore_instance_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "from_status": {
+          "name": "from_status",
+          "type": "chore_status",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "to_status": {
+          "name": "to_status",
+          "type": "chore_status",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "actor_role": {
+          "name": "actor_role",
+          "type": "actor_role",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "actor_parent_id": {
+          "name": "actor_parent_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "actor_dashboard_device_id": {
+          "name": "actor_dashboard_device_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "reason": {
+          "name": "reason",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "chore_transitions_household_id_households_id_fk": {
+          "name": "chore_transitions_household_id_households_id_fk",
+          "tableFrom": "chore_transitions",
+          "tableTo": "households",
+          "columnsFrom": ["household_id"],
+          "columnsTo": ["id"],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "chore_transitions_household_chore_fk": {
+          "name": "chore_transitions_household_chore_fk",
+          "tableFrom": "chore_transitions",
+          "tableTo": "chore_instances",
+          "columnsFrom": ["household_id", "chore_instance_id"],
+          "columnsTo": ["household_id", "id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "chore_transitions_household_parent_fk": {
+          "name": "chore_transitions_household_parent_fk",
+          "tableFrom": "chore_transitions",
+          "tableTo": "parent_memberships",
+          "columnsFrom": ["household_id", "actor_parent_id"],
+          "columnsTo": ["household_id", "parent_id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "chore_transitions_household_dashboard_fk": {
+          "name": "chore_transitions_household_dashboard_fk",
+          "tableFrom": "chore_transitions",
+          "tableTo": "dashboard_devices",
+          "columnsFrom": ["household_id", "actor_dashboard_device_id"],
+          "columnsTo": ["household_id", "id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "chore_transitions_role_actor_match": {
+          "name": "chore_transitions_role_actor_match",
+          "value": "(\n        (\"chore_transitions\".\"actor_role\" = 'PARENT' AND \"chore_transitions\".\"actor_parent_id\" IS NOT NULL AND \"chore_transitions\".\"actor_dashboard_device_id\" IS NULL)\n        OR\n        (\"chore_transitions\".\"actor_role\" = 'DASHBOARD' AND \"chore_transitions\".\"actor_parent_id\" IS NULL AND \"chore_transitions\".\"actor_dashboard_device_id\" IS NOT NULL)\n      )"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.dashboard_devices": {
+      "name": "dashboard_devices",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "household_id": {
+          "name": "household_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(120)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "dashboard_devices_household_id_households_id_fk": {
+          "name": "dashboard_devices_household_id_households_id_fk",
+          "tableFrom": "dashboard_devices",
+          "tableTo": "households",
+          "columnsFrom": ["household_id"],
+          "columnsTo": ["id"],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "dashboard_devices_household_id_unique": {
+          "name": "dashboard_devices_household_id_unique",
+          "nullsNotDistinct": false,
+          "columns": ["household_id", "id"]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.households": {
+      "name": "households",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(120)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "time_zone": {
+          "name": "time_zone",
+          "type": "varchar(64)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.idempotency_records": {
+      "name": "idempotency_records",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "household_id": {
+          "name": "household_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "idempotency_key": {
+          "name": "idempotency_key",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "actor_role": {
+          "name": "actor_role",
+          "type": "actor_role",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "actor_parent_id": {
+          "name": "actor_parent_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "actor_dashboard_device_id": {
+          "name": "actor_dashboard_device_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "operation": {
+          "name": "operation",
+          "type": "varchar(120)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "request_hash": {
+          "name": "request_hash",
+          "type": "varchar(128)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "response": {
+          "name": "response",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "idempotency_records_household_id_households_id_fk": {
+          "name": "idempotency_records_household_id_households_id_fk",
+          "tableFrom": "idempotency_records",
+          "tableTo": "households",
+          "columnsFrom": ["household_id"],
+          "columnsTo": ["id"],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "idempotency_records_household_parent_fk": {
+          "name": "idempotency_records_household_parent_fk",
+          "tableFrom": "idempotency_records",
+          "tableTo": "parent_memberships",
+          "columnsFrom": ["household_id", "actor_parent_id"],
+          "columnsTo": ["household_id", "parent_id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "idempotency_records_household_dashboard_fk": {
+          "name": "idempotency_records_household_dashboard_fk",
+          "tableFrom": "idempotency_records",
+          "tableTo": "dashboard_devices",
+          "columnsFrom": ["household_id", "actor_dashboard_device_id"],
+          "columnsTo": ["household_id", "id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "idempotency_records_household_key_unique": {
+          "name": "idempotency_records_household_key_unique",
+          "nullsNotDistinct": false,
+          "columns": ["household_id", "idempotency_key"]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {
+        "idempotency_records_role_actor_match": {
+          "name": "idempotency_records_role_actor_match",
+          "value": "(\n        (\"idempotency_records\".\"actor_role\" = 'PARENT' AND \"idempotency_records\".\"actor_parent_id\" IS NOT NULL AND \"idempotency_records\".\"actor_dashboard_device_id\" IS NULL)\n        OR\n        (\"idempotency_records\".\"actor_role\" = 'DASHBOARD' AND \"idempotency_records\".\"actor_parent_id\" IS NULL AND \"idempotency_records\".\"actor_dashboard_device_id\" IS NOT NULL)\n      )"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.ledger_transactions": {
+      "name": "ledger_transactions",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "household_id": {
+          "name": "household_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "child_id": {
+          "name": "child_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "amount_cents": {
+          "name": "amount_cents",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "type": {
+          "name": "type",
+          "type": "ledger_transaction_type",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "note": {
+          "name": "note",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "actor_parent_id": {
+          "name": "actor_parent_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "related_chore_instance_id": {
+          "name": "related_chore_instance_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "ledger_transactions_household_child_created_at_idx": {
+          "name": "ledger_transactions_household_child_created_at_idx",
+          "columns": [
+            {
+              "expression": "household_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "child_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "created_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "ledger_transactions_household_id_households_id_fk": {
+          "name": "ledger_transactions_household_id_households_id_fk",
+          "tableFrom": "ledger_transactions",
+          "tableTo": "households",
+          "columnsFrom": ["household_id"],
+          "columnsTo": ["id"],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        },
+        "ledger_transactions_household_child_fk": {
+          "name": "ledger_transactions_household_child_fk",
+          "tableFrom": "ledger_transactions",
+          "tableTo": "child_profiles",
+          "columnsFrom": ["household_id", "child_id"],
+          "columnsTo": ["household_id", "id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "ledger_transactions_household_parent_fk": {
+          "name": "ledger_transactions_household_parent_fk",
+          "tableFrom": "ledger_transactions",
+          "tableTo": "parent_memberships",
+          "columnsFrom": ["household_id", "actor_parent_id"],
+          "columnsTo": ["household_id", "parent_id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "ledger_transactions_household_chore_fk": {
+          "name": "ledger_transactions_household_chore_fk",
+          "tableFrom": "ledger_transactions",
+          "tableTo": "chore_instances",
+          "columnsFrom": ["household_id", "related_chore_instance_id"],
+          "columnsTo": ["household_id", "id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "ledger_transactions_amount_cents_nonzero_except_chore_credit": {
+          "name": "ledger_transactions_amount_cents_nonzero_except_chore_credit",
+          "value": "\"ledger_transactions\".\"amount_cents\" <> 0 OR \"ledger_transactions\".\"type\" = 'CHORE_CREDIT'"
+        },
+        "ledger_transactions_type_amount_sign": {
+          "name": "ledger_transactions_type_amount_sign",
+          "value": "(\n        (\"ledger_transactions\".\"type\" = 'CHORE_CREDIT' AND \"ledger_transactions\".\"amount_cents\" >= 0)\n        OR (\"ledger_transactions\".\"type\" = 'PURCHASE' AND \"ledger_transactions\".\"amount_cents\" < 0)\n        OR (\"ledger_transactions\".\"type\" = 'MANUAL_CREDIT' AND \"ledger_transactions\".\"amount_cents\" > 0)\n        OR \"ledger_transactions\".\"type\" = 'CORRECTION'\n      )"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.parent_memberships": {
+      "name": "parent_memberships",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "household_id": {
+          "name": "household_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "parent_id": {
+          "name": "parent_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "parent_memberships_household_id_households_id_fk": {
+          "name": "parent_memberships_household_id_households_id_fk",
+          "tableFrom": "parent_memberships",
+          "tableTo": "households",
+          "columnsFrom": ["household_id"],
+          "columnsTo": ["id"],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "parent_memberships_household_parent_unique": {
+          "name": "parent_memberships_household_parent_unique",
+          "nullsNotDistinct": false,
+          "columns": ["household_id", "parent_id"]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {
+    "public.actor_role": {
+      "name": "actor_role",
+      "schema": "public",
+      "values": ["PARENT", "DASHBOARD"]
+    },
+    "public.approval_decision": {
+      "name": "approval_decision",
+      "schema": "public",
+      "values": ["APPROVED", "REJECTED"]
+    },
+    "public.chore_status": {
+      "name": "chore_status",
+      "schema": "public",
+      "values": [
+        "AVAILABLE",
+        "CLAIMED",
+        "AWAITING_APPROVAL",
+        "APPROVED",
+        "CLOSED"
+      ]
+    },
+    "public.ledger_transaction_type": {
+      "name": "ledger_transaction_type",
+      "schema": "public",
+      "values": ["CHORE_CREDIT", "PURCHASE", "MANUAL_CREDIT", "CORRECTION"]
+    }
+  },
+  "schemas": {},
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "views": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

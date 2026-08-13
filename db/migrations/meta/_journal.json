@@ -1,0 +1,97 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1786225391687,
+      "tag": "0000_core",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1786229656685,
+      "tag": "0001_ledger-entry-categories",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1786230892663,
+      "tag": "0002_allow-zero-chore-credit",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1786248135860,
+      "tag": "0003_chore-submission-attempts",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1786249597358,
+      "tag": "0004_repair-conflated-chore-submissions",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1786250210981,
+      "tag": "0005_system-chore-transition-actor",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1786250300000,
+      "tag": "0007_core-lineage-compatibility",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1786250378905,
+      "tag": "0006_system-chore-transition-constraint",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1786258312620,
+      "tag": "0008_immutable-attempts-and-credit-links",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1786325156187,
+      "tag": "0009_chore-image-keys",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1786450774379,
+      "tag": "0010_feedback-reports",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1786451895142,
+      "tag": "0011_harden-feedback-reports",
+      "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1786500000000,
+      "tag": "0012_bound-feedback-diagnostics",
+      "breakpoints": true
+    }
+  ]
+}

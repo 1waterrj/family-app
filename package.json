@@ -1,0 +1,29 @@
+{
+  "name": "family-app",
+  "private": true,
+  "packageManager": "pnpm@11.16.0",
+  "engines": {
+    "node": ">=24 <25"
+  },
+  "scripts": {
+    "build": "pnpm -r build",
+    "dev:seed": "./scripts/dev-seed.sh",
+    "test:e2e": "./scripts/e2e-prepare.sh && playwright test",
+    "typecheck": "pnpm -r typecheck",
+    "test": "./scripts/test-verify-api-clean-build.sh && ./scripts/test-build-shared-packages-cleanup.sh && ./scripts/test-build-shared-packages.sh && ./scripts/build-shared-packages.sh && vitest run && pnpm --filter @family/parent test -- --runInBand",
+    "verify:production-bundles": "./scripts/verify-production-bundles.sh",
+    "verify:public-source-privacy": "node scripts/verify-public-source-privacy.mjs",
+    "verify:no-github-credentials": "node scripts/verify-no-github-credentials.mjs",
+    "lint": "eslint .",
+    "format:check": "prettier --check ."
+  },
+  "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "@playwright/test": "1.62.0",
+    "eslint": "10.8.1",
+    "prettier": "3.9.6",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.66.0",
+    "vitest": "4.1.10"
+  }
+}
