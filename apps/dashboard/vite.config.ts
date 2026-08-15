@@ -15,9 +15,9 @@ export const dashboardPwaOptions = {
     ...choreImageAssets,
   ],
   manifest: {
-    name: 'Family Kitchen',
-    short_name: 'Family Kitchen',
-    description: 'A private family kitchen dashboard',
+    name: 'CaperKeeper',
+    short_name: 'CaperKeeper',
+    description: 'Managed mischief for busy families.',
     theme_color: '#FFF9F0',
     background_color: '#FFF9F0',
     display: 'standalone',

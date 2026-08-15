@@ -2,12 +2,11 @@ import type { ConfigContext, ExpoConfig } from 'expo/config';
 
 export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,
-  name: 'Family',
-  slug: 'family-parent',
-  scheme: 'family-app',
+  name: 'CaperKeeper',
+  slug: 'caperkeeper-parent',
+  scheme: 'caperkeeper',
   version: '0.1.0',
   orientation: 'portrait',
-  newArchEnabled: true,
   experiments: {
     typedRoutes: true,
   },
@@ -18,11 +17,11 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     },
   },
   ios: {
-    bundleIdentifier: 'org.jordanwaters.familyapp',
+    bundleIdentifier: 'net.jordanwaters.caperkeeper',
     supportsTablet: true,
   },
   android: {
-    package: 'org.jordanwaters.familyapp',
+    package: 'net.jordanwaters.caperkeeper',
   },
   plugins: ['expo-router', 'expo-secure-store'],
 });

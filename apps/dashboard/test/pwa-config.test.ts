@@ -2,11 +2,13 @@ import { choreImageCatalog } from '@family/chore-images';
 
 import { dashboardPwaOptions } from '../vite.config';
 
-describe('Family Kitchen PWA configuration', () => {
+describe('CaperKeeper PWA configuration', () => {
   test('installs as a standalone landscape dashboard with exact raster icons', () => {
     expect(dashboardPwaOptions.registerType).toBe('prompt');
     expect(dashboardPwaOptions.manifest).toMatchObject({
-      name: 'Family Kitchen',
+      name: 'CaperKeeper',
+      short_name: 'CaperKeeper',
+      description: 'Managed mischief for busy families.',
       display: 'standalone',
       orientation: 'landscape',
       icons: [
