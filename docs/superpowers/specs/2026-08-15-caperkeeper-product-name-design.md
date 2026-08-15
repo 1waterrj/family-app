@@ -46,7 +46,6 @@ Parent-facing actions continue to use plain language such as *Approve*,
 This naming pass updates current public product identity:
 
 - the root README title, introduction, and tagline;
-- the root private package name;
 - the parent app's Expo display name, slug, URL scheme, and pre-release mobile
   identifiers;
 - the dashboard document title and installable PWA metadata.
@@ -55,8 +54,9 @@ The following remain unchanged:
 
 - the public GitHub repository URL `https://github.com/1waterrj/family-app`;
 - the planned household hostname `family.jordanwaters.net`;
-- internal `@family/*` package scopes, environment-variable names, storage
-  keys, database names, Docker resource names, and test fixtures;
+- the private root package name `family-app`, internal `@family/*` package
+  scopes, environment-variable names, storage keys, database names, Docker
+  resource names, and test fixtures;
 - historical design and implementation records that accurately describe the
   repository at the time they were written;
 - existing placeholder icon filenames until a CaperKeeper logo and icon set is
@@ -70,7 +70,7 @@ explicit decision.
 ## Platform Identity
 
 - Product display name: `CaperKeeper`
-- Root package name: `caperkeeper`
+- Root package name: `family-app` (stable internal identifier)
 - Expo slug: `caperkeeper-parent`
 - Deep-link scheme: `caperkeeper`
 - iOS bundle identifier: `net.jordanwaters.caperkeeper`

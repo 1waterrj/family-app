@@ -4,7 +4,7 @@
 
 **Goal:** Apply the approved CaperKeeper working name and tagline to current repository and install metadata without renaming public infrastructure or stable internal identifiers.
 
-**Architecture:** Treat public product identity as a thin metadata layer over the existing `@family/*` monorepo. Test the two installable identity contracts—the dashboard PWA manifest and the parent Expo configuration—then update human-facing repository copy and the private root package name. Historical documents and operational identifiers remain unchanged.
+**Architecture:** Treat public product identity as a thin metadata layer over the existing `@family/*` monorepo. Test the two installable identity contracts—the dashboard PWA manifest and the parent Expo configuration—then update human-facing repository copy. Historical documents and operational identifiers remain unchanged.
 
 **Tech Stack:** TypeScript 6, Expo 57, React Native 0.86, Vite 8, vite-plugin-pwa 1.3, Vitest 4, Jest 29, pnpm 11
 
@@ -150,11 +150,10 @@ git commit -m "feat: brand installed apps as CaperKeeper"
 
 **Files:**
 - Modify: `README.md`
-- Modify: `package.json`
 
 **Interfaces:**
 - Consumes: the approved display name and tagline from the design spec.
-- Produces: a public README introduction and private workspace package identity aligned with CaperKeeper.
+- Produces: a public README introduction aligned with CaperKeeper.
 
 - [ ] **Step 1: Update README identity copy**
 
@@ -170,17 +169,7 @@ CaperKeeper is a local-first household dashboard and native-style parent app for
 
 Preserve the security warning, app/package map, local-development hostname, and repository privacy guidance.
 
-- [ ] **Step 2: Update the private root package name**
-
-Change only the root `package.json` `name` field:
-
-```json
-"name": "caperkeeper"
-```
-
-Do not rename workspace packages, scripts, environment variables, Docker resources, or local directories.
-
-- [ ] **Step 3: Run repository verification**
+- [ ] **Step 2: Run repository verification**
 
 Run:
 
@@ -196,21 +185,21 @@ git diff --check
 
 Expected: every command exits zero, privacy verification reports no violations, and Git reports no whitespace errors.
 
-- [ ] **Step 4: Audit the naming boundary**
+- [ ] **Step 3: Audit the naming boundary**
 
 Run:
 
 ```bash
-rg -n --hidden -S "CaperKeeper|Managed mischief" README.md package.json apps/parent/app.config.ts apps/parent/test/app-config.test.ts apps/dashboard/index.html apps/dashboard/vite.config.ts apps/dashboard/test/pwa-config.test.ts
+rg -n --hidden -S "CaperKeeper|Managed mischief" README.md apps/parent/app.config.ts apps/parent/test/app-config.test.ts apps/dashboard/index.html apps/dashboard/vite.config.ts apps/dashboard/test/pwa-config.test.ts
 git diff --stat
 git status --short
 ```
 
 Expected: the approved product identity appears in every changed public/install surface; the diff contains only the planned files; the remote URL, historical docs, and stable internal identifiers remain unchanged.
 
-- [ ] **Step 5: Commit the repository identity**
+- [ ] **Step 4: Commit the repository identity**
 
 ```bash
-git add README.md package.json docs/superpowers/plans/2026-08-15-caperkeeper-product-name.md
+git add README.md docs/superpowers/plans/2026-08-15-caperkeeper-product-name.md docs/superpowers/specs/2026-08-15-caperkeeper-product-name-design.md
 git commit -m "docs: introduce CaperKeeper brand"
 ```

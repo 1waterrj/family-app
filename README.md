@@ -1,6 +1,8 @@
-# Family App
+# CaperKeeper
 
-Family App is a local-first household dashboard and parent application for shared calendars, chore claiming, parent-gated approvals, adjustable rewards, and child balance tracking.
+> **Managed mischief for busy families.**
+
+CaperKeeper is a local-first household dashboard and native-style parent app for shared calendars, claimable chores, parent-gated approvals, adjustable rewards, and child balance tracking.
 
 > **Current security boundary:** run this project on a trusted LAN only. The development authenticator is not approved for public ingress. Do not expose the API or dashboard through Cloudflare Tunnel until production authentication is implemented.
 
