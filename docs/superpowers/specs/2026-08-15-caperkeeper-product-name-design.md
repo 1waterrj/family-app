@@ -1,8 +1,10 @@
 # CaperKeeper Product Name Design
 
+> **Status:** Superseded on August 17, 2026 by the approved **Managed Mischief** working name. The current source of truth is the repository README and application metadata.
+
 **Date:** 2026-08-15
 
-**Status:** Approved working name
+**Historical status:** Approved working name
 
 ## Decision
 

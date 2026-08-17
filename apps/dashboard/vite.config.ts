@@ -15,9 +15,10 @@ export const dashboardPwaOptions = {
     ...choreImageAssets,
   ],
   manifest: {
-    name: 'CaperKeeper',
-    short_name: 'CaperKeeper',
-    description: 'Managed mischief for busy families.',
+    name: 'Managed Mischief',
+    short_name: 'Managed Mischief',
+    description:
+      'A local-first family dashboard for calendars, chores, rewards, and balances.',
     theme_color: '#FFF9F0',
     background_color: '#FFF9F0',
     display: 'standalone',

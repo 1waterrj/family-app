@@ -2,13 +2,14 @@ import { choreImageCatalog } from '@family/chore-images';
 
 import { dashboardPwaOptions } from '../vite.config';
 
-describe('CaperKeeper PWA configuration', () => {
+describe('Managed Mischief PWA configuration', () => {
   test('installs as a standalone landscape dashboard with exact raster icons', () => {
     expect(dashboardPwaOptions.registerType).toBe('prompt');
     expect(dashboardPwaOptions.manifest).toMatchObject({
-      name: 'CaperKeeper',
-      short_name: 'CaperKeeper',
-      description: 'Managed mischief for busy families.',
+      name: 'Managed Mischief',
+      short_name: 'Managed Mischief',
+      description:
+        'A local-first family dashboard for calendars, chores, rewards, and balances.',
       display: 'standalone',
       orientation: 'landscape',
       icons: [

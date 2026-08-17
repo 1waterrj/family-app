@@ -1,5 +1,7 @@
 # CaperKeeper Product Name Implementation Plan
 
+> **Status:** Superseded on August 17, 2026 by the approved **Managed Mischief** working name. The current source of truth is the repository README and application metadata.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Apply the approved CaperKeeper working name and tagline to current repository and install metadata without renaming public infrastructure or stable internal identifiers.
