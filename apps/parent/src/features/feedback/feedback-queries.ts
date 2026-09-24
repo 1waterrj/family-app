@@ -1,6 +1,5 @@
 import {
   createFamilyApiClient,
-  createSecureUuid,
   familyQueryKeys,
   type ClientSession,
   type FamilyApiClient,
@@ -11,6 +10,8 @@ import {
   queryOptions,
   type QueryClient,
 } from '@tanstack/react-query';
+
+import { createParentUuid } from '../../platform/secure-uuid';
 
 export type FeedbackSubmissionClient = Pick<FamilyApiClient, 'createFeedback'> &
   Partial<Pick<FamilyApiClient, 'cancelPendingRequests'>>;
@@ -187,7 +188,7 @@ export function feedbackDeleteMutationOptions({
 }
 
 export function createFeedbackOperationUuid(): string {
-  return createSecureUuid();
+  return createParentUuid();
 }
 
 function createClient(

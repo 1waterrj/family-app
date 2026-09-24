@@ -19,6 +19,31 @@ afterEach(() => {
 });
 
 describe('parent chore library', () => {
+  test('renders on a native runtime without the browser Web Crypto global', async () => {
+    // Break caught: Expo Go crashes before showing the chore library because
+    // React Native does not expose globalThis.crypto.
+    const cryptoDescriptor = Object.getOwnPropertyDescriptor(
+      globalThis,
+      'crypto',
+    );
+    Object.defineProperty(globalThis, 'crypto', {
+      configurable: true,
+      value: undefined,
+    });
+
+    try {
+      renderChores(async () => jsonResponse(choreSnapshot()));
+
+      expect(await screen.findByText('Chore library')).toBeVisible();
+    } finally {
+      if (cryptoDescriptor) {
+        Object.defineProperty(globalThis, 'crypto', cryptoDescriptor);
+      } else {
+        Reflect.deleteProperty(globalThis, 'crypto');
+      }
+    }
+  });
+
   test('offers every built-in chore picture with an accessible label', async () => {
     renderChores(async () => jsonResponse(choreSnapshot()));
 

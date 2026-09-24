@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { createSecureUuid, type ClientSession } from '@family/api-client';
+import type { ClientSession } from '@family/api-client';
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 import Constants from 'expo-constants';
 import * as SecureStore from 'expo-secure-store';
@@ -25,6 +25,7 @@ import {
 } from '../query/create-query-client';
 import { connectReactNativeQueryManagers } from '../query/react-native-managers';
 import { ScreenState } from '../components/screen-state';
+import { createParentUuid } from '../platform/secure-uuid';
 
 export type ParentAppDependencies = {
   sessionStore: ParentSessionStore;
@@ -71,7 +72,7 @@ export function ParentAppProvider({
   const feedbackDependencies = useMemo<ParentFeedbackDependencies>(
     () => ({
       now: dependencies.feedback?.now ?? (() => new Date()),
-      randomUUID: dependencies.feedback?.randomUUID ?? createSecureUuid,
+      randomUUID: dependencies.feedback?.randomUUID ?? createParentUuid,
       source:
         dependencies.feedback?.source ??
         (Platform.OS === 'android' ? 'PARENT_ANDROID' : 'PARENT_IOS'),

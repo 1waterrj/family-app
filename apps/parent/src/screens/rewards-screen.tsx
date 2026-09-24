@@ -1,7 +1,6 @@
 import {
   FamilyApiError,
   createFamilyApiClient,
-  createSecureUuid,
   familyQueryKeys,
   formatCents,
   parseSignedDollars,
@@ -22,6 +21,7 @@ import {
   type LedgerEntryDraft,
 } from '../features/rewards/ledger-entry-form';
 import { parentSnapshotQueryOptions } from '../query/parent-snapshot';
+import { createParentUuid } from '../platform/secure-uuid';
 
 type LedgerDraftState = {
   draft: LedgerEntryDraft;
@@ -250,7 +250,7 @@ export function RewardsScreen({
               onStartNewOperation={() => {
                 setDraftState((current) => ({
                   ...current,
-                  idempotencyKey: createSecureUuid(),
+                  idempotencyKey: createParentUuid(),
                 }));
                 setDraftFrozen(false);
                 setError(undefined);
@@ -297,7 +297,7 @@ function newLedgerDraft(childId: string): LedgerDraftState {
       amountInput: '',
       note: '',
     },
-    idempotencyKey: createSecureUuid(),
+    idempotencyKey: createParentUuid(),
   };
 }
 

@@ -1,7 +1,6 @@
 import {
   FamilyApiError,
   createFamilyApiClient,
-  createSecureUuid,
   familyQueryKeys,
   parseUnsignedDollars,
   type ClientSession,
@@ -27,6 +26,7 @@ import {
 import { parentSnapshotQueryOptions } from '../query/parent-snapshot';
 import { ScreenState, ScreenStateAction } from '../components/screen-state';
 import type { OpenFeedbackDraft } from '../features/feedback/contextual-feedback';
+import { createParentUuid } from '../platform/secure-uuid';
 
 type OperationState<T> = {
   draft: T;
@@ -71,10 +71,10 @@ export function ChoresScreen({
   );
   const [templateState, setTemplateState] = useState<
     OperationState<TemplateDraft>
-  >(() => ({ draft: emptyTemplateDraft, idempotencyKey: createSecureUuid() }));
+  >(() => ({ draft: emptyTemplateDraft, idempotencyKey: createParentUuid() }));
   const [publishState, setPublishState] = useState<
     OperationState<PublishDraft>
-  >(() => ({ draft: emptyPublishDraft, idempotencyKey: createSecureUuid() }));
+  >(() => ({ draft: emptyPublishDraft, idempotencyKey: createParentUuid() }));
   const [selectedTemplateId, setSelectedTemplateId] = useState<string>();
   const [templateError, setTemplateError] = useState<string>();
   const [publishError, setPublishError] = useState<string>();
@@ -171,7 +171,7 @@ export function ChoresScreen({
       setSelectedTemplateId(created.id);
       setTemplateState({
         draft: emptyTemplateDraft,
-        idempotencyKey: createSecureUuid(),
+        idempotencyKey: createParentUuid(),
       });
       setTemplateFrozen(false);
       queryClient.setQueryData<ParentSnapshot>(
@@ -244,7 +244,7 @@ export function ChoresScreen({
       setPublishSuccess(`Added ${published.name} to the shared pool.`);
       setPublishState({
         draft: emptyPublishDraft,
-        idempotencyKey: createSecureUuid(),
+        idempotencyKey: createParentUuid(),
       });
       setPublishFrozen(false);
       queryClient.setQueryData<ParentSnapshot>(
@@ -291,7 +291,7 @@ export function ChoresScreen({
         onStartNewOperation={() => {
           setTemplateState((current) => ({
             ...current,
-            idempotencyKey: createSecureUuid(),
+            idempotencyKey: createParentUuid(),
           }));
           setTemplateFrozen(false);
           setTemplateError(undefined);
@@ -326,7 +326,7 @@ export function ChoresScreen({
         onStartNewOperation={() => {
           setPublishState((current) => ({
             ...current,
-            idempotencyKey: createSecureUuid(),
+            idempotencyKey: createParentUuid(),
           }));
           setPublishFrozen(false);
           setPublishError(undefined);

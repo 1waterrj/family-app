@@ -526,6 +526,67 @@ describe('parent feedback runtime', () => {
     },
   );
 
+  test('uses the injected native UUID source for every feedback outbox ID', async () => {
+    // Break caught: the command UUID used the native source, but the durable
+    // outbox entry and delivery attempt fell back to browser Web Crypto.
+    const cryptoDescriptor = Object.getOwnPropertyDescriptor(
+      globalThis,
+      'crypto',
+    );
+    Object.defineProperty(globalThis, 'crypto', {
+      configurable: true,
+      value: undefined,
+    });
+
+    try {
+      const storage = createMemoryAsyncStorage();
+      const commandId = '50000000-0000-4000-8000-000000000001';
+      const ids = [
+        commandId,
+        '50000000-0000-4000-8000-000000000002',
+        '50000000-0000-4000-8000-000000000003',
+      ];
+      const randomUUID = jest.fn(() => ids.shift()!);
+      const createFeedback = jest.fn().mockResolvedValue(feedbackReceipt);
+      let runtime!: ParentFeedbackRuntime;
+      const view = render(
+        <ParentFeedbackProvider
+          session={parentSession}
+          fetch={unusedFetch}
+          client={{ createFeedback }}
+          isOnline
+          dependencies={{
+            ...feedbackDependencies(storage),
+            randomUUID,
+          }}
+        >
+          <RuntimeProbe onRuntime={(value) => (runtime = value)} />
+        </ParentFeedbackProvider>,
+      );
+
+      let result!: Awaited<ReturnType<ParentFeedbackRuntime['submit']>>;
+      await act(async () => {
+        result = await runtime.submit({
+          category: 'BROKEN',
+          description: 'Android feedback',
+        });
+      });
+
+      expect(result.status).toBe('delivered');
+      expect(createFeedback).toHaveBeenCalledWith(
+        expect.objectContaining({ idempotencyKey: commandId }),
+      );
+      expect(randomUUID).toHaveBeenCalledTimes(3);
+      view.unmount();
+    } finally {
+      if (cryptoDescriptor) {
+        Object.defineProperty(globalThis, 'crypto', cryptoDescriptor);
+      } else {
+        Reflect.deleteProperty(globalThis, 'crypto');
+      }
+    }
+  });
+
   test('records network diagnostics once per state change and never copies form text into events', async () => {
     // Break caught: rerenders duplicate network events or free-form feedback leaks into diagnostics.
     const storage = createMemoryAsyncStorage();
@@ -1203,10 +1264,7 @@ describe('parent feedback runtime', () => {
           async () => new Promise<Response>(() => undefined),
         )
         .mockImplementation(async () => Response.json(feedbackReceipt));
-      const ids = [
-        '50000000-0000-4000-8000-000000000001',
-        '50000000-0000-4000-8000-000000000002',
-      ];
+      let uuidSequence = 0;
       let runtime!: ParentFeedbackRuntime;
       render(
         <ParentFeedbackProvider
@@ -1215,7 +1273,8 @@ describe('parent feedback runtime', () => {
           isOnline
           dependencies={{
             ...feedbackDependencies(storage),
-            randomUUID: () => ids.shift()!,
+            randomUUID: () =>
+              `50000000-0000-4000-8000-${String(++uuidSequence).padStart(12, '0')}`,
           }}
         >
           <RuntimeProbe onRuntime={(value) => (runtime = value)} />
@@ -1311,9 +1370,11 @@ function renderRuntime({
 }
 
 function feedbackDependencies(storage: AsyncStorageLike) {
+  let uuidSequence = 0;
   return {
     now: () => new Date('2026-08-10T12:00:00.000Z'),
-    randomUUID: () => '50000000-0000-4000-8000-000000000001',
+    randomUUID: () =>
+      `50000000-0000-4000-8000-${String(++uuidSequence).padStart(12, '0')}`,
     source: 'PARENT_IOS' as const,
     appVersion: '1.2.3',
     storage,

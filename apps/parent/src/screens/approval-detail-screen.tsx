@@ -1,6 +1,5 @@
 import {
   FamilyApiError,
-  createSecureUuid,
   formatCents,
   type ClientSession,
 } from '@family/api-client';
@@ -27,6 +26,7 @@ import { parentSnapshotQueryOptions } from '../query/parent-snapshot';
 import { ScreenState } from '../components/screen-state';
 import { ScreenStateAction } from '../components/screen-state';
 import type { OpenFeedbackDraft } from '../features/feedback/contextual-feedback';
+import { createParentUuid } from '../platform/secure-uuid';
 
 type DraftState = {
   draft: ApprovalDraft;
@@ -73,7 +73,7 @@ export function ApprovalDetailScreen({
               note: '',
               rejectionReason: '',
             },
-            idempotencyKey: createSecureUuid(),
+            idempotencyKey: createParentUuid(),
           },
     );
   }, [pending]);

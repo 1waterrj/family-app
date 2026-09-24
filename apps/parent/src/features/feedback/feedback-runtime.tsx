@@ -489,6 +489,7 @@ function createResources(dependencies: ParentFeedbackDependencies): {
       key: PARENT_FEEDBACK_OUTBOX_KEY,
       coordinationIdentity: dependencies.storage,
       now: () => now().getTime(),
+      randomUUID: dependencies.randomUUID,
     }),
     now,
     randomUUID: dependencies.randomUUID,
