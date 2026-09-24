@@ -118,6 +118,46 @@ describe('parent chore library', () => {
     );
   });
 
+  test.each([
+    ['a leading decimal', '.25', 25],
+    ['an Android localized decimal', '1,00', 100],
+  ] as const)(
+    'creates a template from %s reward input',
+    async (_, input, cents) => {
+      let createdTemplate: ReturnType<typeof template> | undefined;
+      let submittedBody: Record<string, unknown> | undefined;
+      const fetchImpl: typeof globalThis.fetch = async (url, init) => {
+        if (new URL(String(url)).pathname === '/v1/parent/snapshot') {
+          return jsonResponse(
+            choreSnapshot(createdTemplate ? [createdTemplate] : []),
+          );
+        }
+        submittedBody = JSON.parse(String(init?.body)) as Record<
+          string,
+          unknown
+        >;
+        createdTemplate = template({
+          name: submittedBody.name,
+          instructions: submittedBody.instructions,
+          defaultValueCents: submittedBody.defaultValueCents,
+        });
+        return jsonResponse(createdTemplate, 201);
+      };
+      renderChores(fetchImpl);
+      await screen.findByText('Chore library');
+      populateTemplateDraft();
+      fireEvent.changeText(screen.getByLabelText('Default reward'), input);
+      fireEvent.press(screen.getByRole('button', { name: 'Create template' }));
+
+      expect(
+        await screen.findByText('Dishes is selected for publishing.'),
+      ).toBeVisible();
+      expect(submittedBody).toEqual(
+        expect.objectContaining({ defaultValueCents: cents }),
+      );
+    },
+  );
+
   test('freezes an ambiguous template draft until an explicit new operation rotates its key', async () => {
     const bodies: Array<Record<string, unknown>> = [];
     const operationKeys: string[] = [];

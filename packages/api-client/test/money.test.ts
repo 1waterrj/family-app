@@ -10,9 +10,21 @@ describe('money helpers', () => {
   it('parses decimal dollars into exact integer cents', () => {
     expect(parseUnsignedDollars('0')).toBe(0);
     expect(parseUnsignedDollars('0.5')).toBe(50);
+    expect(parseUnsignedDollars('1.00')).toBe(100);
     expect(parseUnsignedDollars('12.34')).toBe(1234);
     expect(parseSignedDollars('+12.34')).toBe(1234);
     expect(parseSignedDollars('-12.34')).toBe(-1234);
+  });
+
+  it('accepts safe mobile and localized dollar entry forms', () => {
+    // Break caught: Android decimal keyboards can emit comma decimals, and
+    // parents commonly enter sub-dollar rewards without a leading zero.
+    expect(parseUnsignedDollars('.25')).toBe(25);
+    expect(parseUnsignedDollars(',25')).toBe(25);
+    expect(parseUnsignedDollars('1,00')).toBe(100);
+    expect(parseUnsignedDollars(' 1.00 ')).toBe(100);
+    expect(parseSignedDollars('-.25')).toBe(-25);
+    expect(parseSignedDollars('+,25')).toBe(25);
   });
 
   it('rejects non-decimal input and PostgreSQL int4 overflow', () => {

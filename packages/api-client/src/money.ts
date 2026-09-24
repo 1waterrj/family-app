@@ -4,7 +4,7 @@ const unsignedDollarsPattern = /^(0|[1-9][0-9]*)(?:\.([0-9]{1,2}))?$/;
 const signedDollarsPattern = /^([+-]?)(0|[1-9][0-9]*)(?:\.([0-9]{1,2}))?$/;
 
 export function parseUnsignedDollars(value: string): number {
-  const match = unsignedDollarsPattern.exec(value);
+  const match = unsignedDollarsPattern.exec(normalizeDollarInput(value));
   if (!match)
     throw new RangeError('Expected dollars with at most two decimals.');
 
@@ -12,12 +12,20 @@ export function parseUnsignedDollars(value: string): number {
 }
 
 export function parseSignedDollars(value: string): number {
-  const match = signedDollarsPattern.exec(value);
+  const match = signedDollarsPattern.exec(normalizeDollarInput(value));
   if (!match)
     throw new RangeError('Expected signed dollars with at most two decimals.');
 
   const sign = match[1] === '-' ? -1 : 1;
   return toCents(match[2], match[3], sign);
+}
+
+function normalizeDollarInput(value: string): string {
+  const trimmed = value.trim();
+  const decimalNormalized = trimmed.includes('.')
+    ? trimmed
+    : trimmed.replace(',', '.');
+  return decimalNormalized.replace(/^([+-]?)\./, '$10.');
 }
 
 export function formatCents(cents: number, locale: string): string {
